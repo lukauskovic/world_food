@@ -15,7 +15,8 @@ class Category extends Model
     protected $fillable = ['slug'];
     public $translatedAttributes = ['title'];
     public $translationModel = 'App\CategoryTranslation';
+
     public function meal(){
-        $this->belongsTo('App/Meal');
+        $this->belongsToMany('App\Meal');
     }
 }

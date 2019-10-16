@@ -11,6 +11,4 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/{perPage?}/{category?}/{tags?}/{with?}/{diff_time?}/{lang?}','MealController@index');

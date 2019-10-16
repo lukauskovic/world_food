@@ -11,20 +11,19 @@ class Meal extends Model
     use SoftDeletes;
     use Translatable;
 
-    protected $fillable = ['slug'];
     public $translatedAttributes = ['title', 'description'];
     public $translationModel = 'App\MealTranslation';
 
     public function category(){
-        return $this->hasOne('App/Category' , 'categoryId');
+        return $this->belongsTo('App\Category', 'categoryId');
     }
 
-    public function tag(){
-        return $this->belongsToMany('App/Tag', 'meals_tags', 'mealId');
+    public function tags(){
+        return $this->belongsToMany('App\Tag', 'meals_tags', 'mealId', 'tagId');
     }
 
-    public function ingredient(){
-        return $this->belongsToMany('App/Ingredient', 'meals_ingredients', 'mealId');
+    public function ingredients(){
+        return $this->belongsToMany('App\Ingredient', 'meals_ingredients', 'mealId', 'ingredientId');
     }
 
 }

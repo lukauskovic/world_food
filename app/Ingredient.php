@@ -17,6 +17,6 @@ class Ingredient extends Model
     public $translationModel = 'App\IngredientTranslation';
 
     public function meal(){
-        return $this->belongsToMany('App/Meal', 'meals_ingredients', 'mealId');
+        return $this->belongsToMany('App\Meal', 'meals_ingredients', 'mealId', 'ingredientId');
     }
 }

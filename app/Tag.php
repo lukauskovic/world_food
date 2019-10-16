@@ -16,6 +16,6 @@ class Tag extends Model
     public $translationModel = 'App\TagTranslation';
 
     public function meal(){
-        return $this->belongsToMany('App/Meal', 'meals_tags', 'tagId');
+        return $this->belongsToMany('App\Meal', 'meals_tags', 'mealId', 'tagId');
     }
 }
