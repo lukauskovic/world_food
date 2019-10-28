@@ -11,20 +11,20 @@ class MealController extends Controller
 {
     public function index(Request $request)
     {
-        if (!isset($request->lang)) {
+        if ((!$request->filled('lang'))) {
             return response()->json([
                 'message' => 'Bad Request'], 400);
         };
-        App::setLocale($request->lang);
+        App::setLocale($request->query('lang'));
 
         $meals = Meal::query();
 
-        if (isset($request->category)) {
+        if ($request->filled('category')) {
             $meals->whereIn('categoryId', $this->categoryFilter($request));
         }
 
-        if (isset($request->tags)) {
-            $tags = array_map('intval', explode(',', $request->tags));
+        if ($request->filled('tags')) {
+            $tags = array_map('intval', explode(',', $request->query('tags')));
             foreach ($tags as $tag) {
                 $meals->whereHas('tags', function ($q) use ($tag) {
                     $q->where('id', $tag);
@@ -32,8 +32,8 @@ class MealController extends Controller
             }
         }
 
-        if (isset($request->with)) {
-            $with = array_map('strval', explode(',', $request->with));
+        if ($request->filled('with')) {
+            $with = array_map('strval', explode(',', $request->query('with')));
             if (in_array('tags', $with)) {
                 $meals->with('tags');
             }
@@ -45,21 +45,21 @@ class MealController extends Controller
             }
         }
 
-        if (isset($request->diff_time) & $request->diff_time > 0) {
+        if ($request->filled('diff_time') & $request->query('diff_time') > 0) {
             $meals->withTrashed();
         }
 
-        return MealResource::collection($meals->simplePaginate($request->perPage));
+        return MealResource::collection($meals->simplePaginate($request->query('perPage')));
     }
 
     public function categoryFilter(Request $request)
     {
-        if (strtolower($request->category) == 'null') {
+        if (strtolower($request->query('category')) == 'null') {
             return null;
-        } elseif (strtolower($request->category) == '!null') {
+        } elseif (strtolower($request->query('category')) == '!null') {
             return !null;
         } else {
-            return array_map('intval', explode(',', $request->category));
+            return array_map('intval', explode(',', $request->query('category')));
         }
     }
 }

@@ -11,4 +11,4 @@
 |
 */
 
-Route::get('/{perPage?}/{category?}/{tags?}/{with?}/{diff_time?}/{lang?}','MealController@index');
+
