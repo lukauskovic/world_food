@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\MealResource;
 use App\Meal;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 
@@ -46,6 +47,11 @@ class MealController extends Controller
         }
 
         if ($request->filled('diff_time') & $request->query('diff_time') > 0) {
+            $diff_time = Carbon::createFromTimestamp($request->query('diff_time'));
+            $timeColumns = ['created_at', 'updated_at', 'deleted_at'];
+            foreach ($timeColumns as $column) {
+                $meals->orWhere($column, '>=', $diff_time);
+            }
             $meals->withTrashed();
         }
 

@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Category;
 use App\Ingredient;
 use App\Meal;
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\Resource;
 
 class MealResource extends Resource
@@ -17,9 +18,15 @@ class MealResource extends Resource
      */
     public function toArray($request)
     {
-        if ($this->deleted_at == null){
-            $status = 'created';
-        }else $status = 'deleted';
+        $status = 'created';
+        if ($request->filled('diff_time')) {
+            $diffTime = Carbon::createFromTimestamp($request->query('diff_time'));
+            if ($this->deleted_at && $this->deleted_at >= $diffTime) {
+                $status = 'deleted';
+            } else if ($this->created_at != $this->updated_at && $this->updated_at >= $diffTime) {
+                $status = 'updated';
+            }
+        }
 
         return [
             'id' => $this->id,
